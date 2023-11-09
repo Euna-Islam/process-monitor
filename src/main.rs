@@ -6,17 +6,24 @@ use warp::Filter;
 
 #[tokio::main]
 async fn main() {
-    // GET disk_info_route => 200 OK with body "Hello, warp!"
-    let disk_info_route = warp::path!("process-monitor")
-        .map(|| warp::reply::html(get_system_info()));
+   // GET process_monitor_route => 200 OK with body containing system info
+   let process_monitor_route = warp::path!("process-monitor")
+   .map(|| warp::reply::html(get_system_info()));
+
+    // GET other_page_route => 200 OK with body containing other info
+    let other_page_route = warp::path!("cpu")
+    .map(|| warp::reply::html(get_other_info()));
+
+    // Combine routes
+    let routes = process_monitor_route.or(other_page_route);
 
     // Start the warp server
-    warp::serve(disk_info_route)
-        .run(([127, 0, 0, 1], 3030))
-        .await;
+    warp::serve(routes)
+    .run(([127, 0, 0, 1], 3030))
+    .await;
 }
 
-// Function to get disk information
+// Function to get system information
 fn get_system_info() -> String {
     let mut sys = System::new_all();
 
@@ -25,47 +32,32 @@ fn get_system_info() -> String {
     let sys_name = sys.name().expect("Could not get system name").to_string();
     let sys_host = sys.host_name().expect("Could not get host name").to_string();
 
-    let mut sys_info = "System Information<br>.....................".to_string();
 
-    sys_info.push_str("<br>System Name : ");
-    sys_info.push_str(&sys_name);
-
-    sys_info.push_str("<br>Host Name : ");
-    sys_info.push_str(&sys_host);
-
-    sys_info
+    format!(
+        r#"
+        <html>
+        <body>
+            <!-- Link to other_page -->
+            <a href="/cpu" target="_blank">CPU</a>
+            <h1>System Information</h1>
+            <p>System Name: {sys_name}</p>
+            <p>Host Name: {sys_host}</p>  
+        </body>
+        </html>
+        "#
+    )
 }
 
-// fn get_system_data() {
-//     let mut sys = System::new_all();
-
-//     // First we update all information of our `System` struct.
-//     sys.refresh_all();
-
-//     // We display all disks' information:
-//     println!("=> disks:");
-//     for disk in sys.disks() {
-//         println!("{:?}", disk);
-//     }
-
-//     println!("=> system:");
-//     // RAM and swap information:
-//     println!("total memory: {} bytes", sys.total_memory());
-//     println!("used memory : {} bytes", sys.used_memory());
-//     println!("total swap  : {} bytes", sys.total_swap());
-//     println!("used swap   : {} bytes", sys.used_swap());
-
-//     // Display system information:
-//     println!("System name:             {:?}", sys.name());
-//     println!("System kernel version:   {:?}", sys.kernel_version());
-//     println!("System OS version:       {:?}", sys.os_version());
-//     println!("System host name:        {:?}", sys.host_name());
-
-//     // Number of CPUs:
-//     println!("NB CPUs: {}", sys.cpus().len());
-
-//     // Display processes ID, name na disk usage:
-//     for (pid, process) in sys.processes() {
-//         println!("[{}] {} {:?}", pid, process.name(), process.disk_usage());
-//     }
-// }
+// Function to get information for other page
+fn get_other_info() -> String {
+    format!(
+        r#"
+        <html>
+        <body>
+            <h1>Other Page Information</h1>
+            <p>Some other information here...</p>
+        </body>
+        </html>
+        "#
+    )
+}
