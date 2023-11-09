@@ -1,18 +1,39 @@
 extern crate sysinfo;
 extern crate warp;
 
-//use sysinfo::{ProcessExt, System, SystemExt};
+use sysinfo::{ProcessExt, System, SystemExt};
 use warp::Filter;
 
 #[tokio::main]
 async fn main() {
-    // GET /hello/warp => 200 OK with body "Hello, warp!"
-    let hello = warp::path!("hello" / String)
-        .map(|name| format!("Hello, {}!", name));
+    // GET disk_info_route => 200 OK with body "Hello, warp!"
+    let disk_info_route = warp::path!("process-monitor")
+        .map(|| warp::reply::html(get_system_info()));
 
-    warp::serve(hello)
+    // Start the warp server
+    warp::serve(disk_info_route)
         .run(([127, 0, 0, 1], 3030))
         .await;
+}
+
+// Function to get disk information
+fn get_system_info() -> String {
+    let mut sys = System::new_all();
+
+    sys.refresh_all();
+
+    let sys_name = sys.name().expect("Could not get system name").to_string();
+    let sys_host = sys.host_name().expect("Could not get host name").to_string();
+
+    let mut sys_info = "System Information<br>.....................".to_string();
+
+    sys_info.push_str("<br>System Name : ");
+    sys_info.push_str(&sys_name);
+
+    sys_info.push_str("<br>Host Name : ");
+    sys_info.push_str(&sys_host);
+
+    sys_info
 }
 
 // fn get_system_data() {
