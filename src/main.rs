@@ -79,7 +79,7 @@ fn get_process_info() -> String {
     let mut sys = System::new_all();
 
     sys.refresh_all();
-
+    println!("Refreshed!");
     // Display processes ID, name na disk usage:
     // for (pid, process) in sys.processes() {
     //     println!("[{}] {} {:?} {} {}%", pid, process.name(), process.disk_usage(), process.status(), process.cpu_usage());
@@ -106,6 +106,7 @@ fn get_process_info() -> String {
     format!(
         r#"
         <html>
+        <header><meta http-equiv="refresh" content="30"></header>
         <body>
             <h1>Process Information</h1>
             <table border="1">
