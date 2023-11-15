@@ -1,11 +1,7 @@
 extern crate sysinfo;
 
 use sysinfo::{System, SystemExt};
-
-pub struct SystemInfo {
-    pub host: String,
-    pub name: String
-}
+use process_monitor::models::system_info::SystemInfo;
 
 pub fn get_system_info() -> SystemInfo {
     let mut sys = System::new_all();

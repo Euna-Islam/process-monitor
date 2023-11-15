@@ -6,8 +6,11 @@ mod utils{
 mod app_args;
 
 use std::env;
-use utils::system::{get_system_info, SystemInfo};
-use utils::process::{get_process_info, ProcessInfo};
+use process_monitor::models::system_info::SystemInfo;
+use process_monitor::models::process_info::ProcessInfo;
+
+use utils::system::get_system_info;
+use utils::process::get_process_info;
 
 fn main() {
     take_cmd_line_arg();

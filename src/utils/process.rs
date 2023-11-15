@@ -1,13 +1,7 @@
 extern crate sysinfo;
 
 use sysinfo::{ProcessExt, System, SystemExt};
-
-pub struct ProcessInfo {
-    pub name: String,
-    pub id: String,
-    pub cpu_usage: String,
-    pub status: String
-}
+use process_monitor::models::process_info::ProcessInfo;
 
 pub fn get_process_info() -> Vec<ProcessInfo> {
     let mut sys = System::new_all();
