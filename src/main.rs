@@ -19,22 +19,50 @@ use utils::process::get_process_info;
 
 fn main() {
     take_cmd_line_arg();
-    process::exit(exitcode::OK);
+}
+
+fn take_cmd_line_arg() {
+    let args: Vec<String> = env::args().collect();
+    match args.len() {
+        1 => {
+            read_config();
+        },
+        2 => {
+            process_arg(&args);
+        },
+        _ => {
+            handle_argument_error();
+        }
+
+    }
 }
 
 fn read_config() {
     let content = read_file(app_args::INTRO_FILE_PATH);
     match content {
         Ok(_) => {
-            start_app();
+            run_app();
         },
-        Err(_) => {eprint!("testing error")}
+        Err(_) => {
+            handle_file_error()
+        }
     }
 }
 
-fn start_app() {
+fn process_arg(args: &Vec<String>) {
+    match args[1].as_str() {
+        app_args::HELP_ARG => {
+            print_help_file();
+        }
+        _ => {
+            handle_argument_error();
+        }
+    }
+}
+
+fn run_app() {
     loop {
-        print!("Enter command: ");
+        print_info("Enter command: ");
 
         io::stdout().flush().unwrap();
 
@@ -45,14 +73,13 @@ fn start_app() {
 
         match input {
             "exit" => {
-                println!("Exiting the program.");
+                print_info("Exiting the program.");
                 break;
             },
             "0" => {
-                
                 let content = read_file(app_args::HELP_FILE_PATH);
                 match content {
-                    Err(_) => {eprint!("testing error")},
+                    Err(_) => {handle_file_error()},
                     _ => {}
                 }
             },
@@ -65,61 +92,30 @@ fn start_app() {
             "3" => {
                 get_memory_heavy_process();
             }
-            _ => println!("Invalid command. Please try again or type 'exit' to quit."),
+            _ => print_error("Invalid command. Please use help."),
         }
     }
+
+    process::exit(exitcode::OK);
 }
-
-
 
 fn read_file(file_path: &str) -> Result<(), &'static str> {
     let file_content = std::fs::read_to_string(file_path);
     match file_content {
         Ok(content) => {
-                                    println!("{}", content);
+                                    print_info(&content);
                                     Ok(())
                                 }
         Err(_error) => {
-                                Err("Could not open start file")
+                                Err("Internal Error. Could not open start file.")
                              }
-    }
-}
-
-fn take_cmd_line_arg() {
-    let args: Vec<String> = env::args().collect();
-    match args.len() {
-        1 => {
-            read_config();
-        },
-        2 => {
-            let result = process_arg(&args);
-            match result {
-                Ok(_) => println!("Operation successful"),
-                Err(err) => eprintln!(" {}", err),
-            }
-        },
-        _ => {
-            eprintln!("Error handling arguments. Please use -- manual");
-            process::exit(exitcode::USAGE);
-        }
-
-    }
-}
-
-fn process_arg(args: &Vec<String>) -> Result<(), &'static str> {
-    match args[1].as_str() {
-        app_args::HELP_ARG => {
-            print_help_file();
-            Ok(())
-        }
-        _ => Err("Invalid argument. Use --help, --system, or --process.")
     }
 }
 
 fn print_help_file() {
     let result = std::fs::read_to_string(app_args::MAN_FILE_PATH);
     match result {
-        Ok(content) => { println!("{}", content); }
+        Ok(content) => { print_info(&content); }
         Err(error) => { eprintln!("Internal error! Error: {}", error); }
     }
 }
@@ -140,6 +136,29 @@ fn print_system_info() {
 fn get_memory_heavy_process() {
     let process_info: Vec<ProcessInfo> = get_expensive_processes();
 
-    println!("No of processes : {}", process_info.len());
+    let s1 = "No of processes : ";
+    let s2 = process_info.len();
+    
+    let result = s1.to_string() + " " + &s2.to_string();
+    print_info(&result);
 }
 
+fn handle_argument_error() {
+    print_error(app_args::ARGUMENT_ERROR);
+    process::exit(exitcode::USAGE);
+}
+
+fn handle_file_error() {
+    print_error(app_args::FILE_ERROR);
+    process::exit(exitcode::CONFIG);
+}
+
+fn print_error(err: &str) {
+    eprintln!("{}", &err);
+}
+
+fn print_info(content: &str) {
+    let stdout = io::stdout(); 
+    let mut handle = stdout.lock();
+    let _result = writeln!(handle, "{}", &content);
+}
