@@ -2,7 +2,7 @@ use std::fmt;
 
 pub struct SystemInfo {
     pub host: String,
-    pub name: String
+    pub name: String,
 }
 
 //source: https://stackoverflow.com/a/36439447
