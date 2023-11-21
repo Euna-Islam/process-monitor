@@ -3,4 +3,5 @@ Command Action
 0       help
 1       system info
 2       list processes
-3       get first 5 memory heavy process
+3       sort processes by memory usage(descending)
+4       sort processes by cpu usage(descending)

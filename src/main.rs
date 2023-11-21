@@ -12,9 +12,8 @@ use std::env;
 use process_monitor::models::system_info::SystemInfo;
 use process_monitor::models::process_info::ProcessInfo;
 
-use utils::process::get_expensive_processes;
+use utils::process::{get_process_info, sort_by_memory, sort_by_cpu_usage};
 use utils::system::get_system_info;
-use utils::process::get_process_info;
 
 
 fn main() {
@@ -88,15 +87,25 @@ fn run_app() {
                 }
             },
             "1" => {
-                print_system_info();
+                let system_info: SystemInfo = get_system_info();
+                print_info(&system_info.to_string());
             },
             "2" => {
-                print_process_info();
+                let process_info: Vec<ProcessInfo> = get_process_info();
+                print_processes(process_info);
             },
             "3" => {
-                get_memory_heavy_process();
+                let process_info: Vec<ProcessInfo> = sort_by_memory();
+                print_processes(process_info);
+            },
+            "4" => {
+                let process_info: Vec<ProcessInfo> = sort_by_cpu_usage();
+                print_processes(process_info);
             }
-            _ => print_error("Invalid command. Please use help."),
+            _ => {
+                    print_error("Invalid command. Please use help.");
+                    process::exit(exitcode::USAGE);
+                 },
         }
     }
 
@@ -116,9 +125,7 @@ fn read_file(file_path: &str) -> Result<(), &'static str> {
     }
 }
 
-fn print_process_info() {
-    let process_info: Vec<ProcessInfo> = get_process_info();
-
+fn print_processes(process_info: Vec<ProcessInfo>) {
     let stdout = io::stdout();
     let mut handle = stdout.lock();
 
@@ -130,22 +137,6 @@ fn print_process_info() {
             print_error(&err.to_string())
         };
     }
-}
-
-fn print_system_info() {
-    let system_info: SystemInfo = get_system_info();
-
-    print_info(&system_info.to_string());
-}
-
-fn get_memory_heavy_process() {
-    let process_info: Vec<ProcessInfo> = get_expensive_processes();
-
-    let s1 = "No of processes : ";
-    let s2 = process_info.len();
-    
-    let result = s1.to_string() + " " + &s2.to_string();
-    print_info(&result);
 }
 
 fn handle_argument_error() {
