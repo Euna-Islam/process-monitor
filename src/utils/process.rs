@@ -7,7 +7,7 @@ pub fn get_process_info() -> Vec<ProcessInfo> {
     let mut sys = System::new_all();
     sys.refresh_all();
 
-    let process_list: Vec<ProcessInfo> = sys.processes().iter()
+    let mut process_list: Vec<ProcessInfo> = sys.processes().iter()
     .map(|(pid, process)| {
         ProcessInfo {
             name: process.name().to_string(),
@@ -18,6 +18,12 @@ pub fn get_process_info() -> Vec<ProcessInfo> {
         }
     })
     .collect();
+
+    process_list.sort_by(|a, b| {
+        let a_mem = a.memory_usage.parse::<u64>().unwrap_or(0);
+        let b_mem = b.memory_usage.parse::<u64>().unwrap_or(0);
+        a_mem.cmp(&b_mem)
+    });
 
     process_list
 }
