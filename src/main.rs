@@ -5,6 +5,8 @@ mod utils{
 
 mod app_args;
 
+use std::process;
+
 use std::env;
 use process_monitor::models::system_info::SystemInfo;
 use process_monitor::models::process_info::ProcessInfo;
@@ -14,6 +16,7 @@ use utils::process::get_process_info;
 
 fn main() {
     take_cmd_line_arg();
+    process::exit(exitcode::OK);
 }
 
 fn take_cmd_line_arg() {
@@ -24,11 +27,12 @@ fn take_cmd_line_arg() {
             let result = process_arg(&args);
             match result {
                 Ok(_) => println!("Operation successful"),
-                Err(err) => eprintln!("Error processing input: {}", err),
+                Err(err) => eprintln!(" {}", err),
             }
         },
         _ => {
             eprintln!("Error handling arguments. Please use -- manual");
+            process::exit(exitcode::USAGE);
         }
 
     }
