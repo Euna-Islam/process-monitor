@@ -11,6 +11,7 @@ use std::env;
 use process_monitor::models::system_info::SystemInfo;
 use process_monitor::models::process_info::ProcessInfo;
 
+use utils::process::get_expensive_processes;
 use utils::system::get_system_info;
 use utils::process::get_process_info;
 
@@ -52,6 +53,10 @@ fn process_arg(args: &Vec<String>) -> Result<(), &'static str> {
             print_help_file();
             Ok(())
         },
+        app_args::SORT_PROCESS_ARG => {
+            get_memory_heavy_process();
+            Ok(())
+        },
         _ => Err("Invalid argument. Use --help, --system, or --process."),
     }
 }
@@ -75,4 +80,10 @@ fn print_system_info() {
 
     println!("System Host : {} ", system_info.host);
     println!("System Name : {} ", system_info.name);
+}
+
+fn get_memory_heavy_process() {
+    let process_info: Vec<ProcessInfo> = get_expensive_processes();
+
+    println!("No of processes : {}", process_info.len());
 }
