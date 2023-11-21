@@ -1,0 +1,3 @@
+Command Options:
+--system  For printing system information
+--process For printing process information
