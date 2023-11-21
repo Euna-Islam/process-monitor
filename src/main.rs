@@ -52,7 +52,11 @@ fn read_config() {
 fn process_arg(args: &Vec<String>) {
     match args[1].as_str() {
         app_args::HELP_ARG => {
-            print_help_file();
+            let content = read_file(app_args::MAN_FILE_PATH);
+                match content {
+                    Err(_) => {handle_file_error()},
+                    _ => {}
+                }
         }
         _ => {
             handle_argument_error();
@@ -112,25 +116,26 @@ fn read_file(file_path: &str) -> Result<(), &'static str> {
     }
 }
 
-fn print_help_file() {
-    let result = std::fs::read_to_string(app_args::MAN_FILE_PATH);
-    match result {
-        Ok(content) => { print_info(&content); }
-        Err(error) => { eprintln!("Internal error! Error: {}", error); }
-    }
-}
-
 fn print_process_info() {
     let process_info: Vec<ProcessInfo> = get_process_info();
 
-    println!("No of processes : {}", process_info.len());
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
+
+    if let Err(err) = writeln!(handle, "{:<50} {:<5} {:<10} {:<10} {:<10}", "Name", "Id", "CPU", "Memory", "Status"){
+        print_error(&err.to_string())
+    };
+    for item in process_info {
+        if let Err(err) = writeln!(handle, "{}", item){
+            print_error(&err.to_string())
+        };
+    }
 }
 
 fn print_system_info() {
     let system_info: SystemInfo = get_system_info();
 
-    println!("System Host : {} ", system_info.host);
-    println!("System Name : {} ", system_info.name);
+    print_info(&system_info.to_string());
 }
 
 fn get_memory_heavy_process() {
@@ -160,5 +165,7 @@ fn print_error(err: &str) {
 fn print_info(content: &str) {
     let stdout = io::stdout(); 
     let mut handle = stdout.lock();
-    let _result = writeln!(handle, "{}", &content);
+    if let Err(err) = writeln!(handle, "{}", &content) {
+        print_error(&err.to_string())
+    };
 }
