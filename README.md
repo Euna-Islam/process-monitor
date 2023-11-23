@@ -11,4 +11,4 @@
 [3] [Rust Iterator Trait](https://doc.rust-lang.org/std/iter/trait.Iterator.html)<br>
 [4] [Rust Program Arguments](https://doc.rust-lang.org/rust-by-example/std_misc/arg.html)<br>
 [5] [Rust Flow of Control - Match](https://doc.rust-lang.org/rust-by-example/flow_control/match.html)<br>
-
+[6] [Rust Display Trait](https://doc.rust-lang.org/std/fmt/trait.Display.html)<br>

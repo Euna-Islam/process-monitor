@@ -1,3 +1,8 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+/*
+ * module models
+ */
 pub mod process_info;
 pub mod system_info;
 

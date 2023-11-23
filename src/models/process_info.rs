@@ -1,5 +1,12 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+//import format module from standard library
 use std::fmt;
 
+/*
+ *struct ProcessInfo
+ *contains process id, name, cpu usage, memory usage and status
+*/
 pub struct ProcessInfo {
     pub name: String,
     pub id: String,
@@ -8,6 +15,9 @@ pub struct ProcessInfo {
     pub memory_usage: String,
 }
 
+/*
+implementing trait Display for SystemInfo
+*/
 impl fmt::Display for ProcessInfo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
