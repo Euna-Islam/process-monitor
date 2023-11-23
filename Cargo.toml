@@ -1,10 +1,15 @@
 [package]
 name = "process_monitor"
 version = "0.1.0"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-[features]
+edition = "2021"
+authors = ["Euna Islam <euna.islam@gmail.com>"]
+license = "Apache-2.0"
+description = "A simple process monitor"
+readme = "README.md"
+homepage = "https://github.com/Euna-Islam/process-monitor"
+repository = "https://github.com/Euna-Islam/process-monitor"
 
 
 [dependencies]
-
+exitcode = "1.1.2"
+sysinfo="0.29.10"

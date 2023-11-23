@@ -1,0 +1,5 @@
+Start the application with cargo --run
+
+Command Options:
+-- manual
+
