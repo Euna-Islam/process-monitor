@@ -4,4 +4,4 @@ cmd /c cargo clean
 cmd /c "cargo build"
 
 #copy config files
-Copy-Item -Path "text_files" -Destination "target\debug\text_files" -Recurse -Force
+Copy-Item -Path "config_files" -Destination "target\debug\config_files" -Recurse -Force

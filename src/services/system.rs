@@ -4,7 +4,7 @@
 extern crate sysinfo;
 
 //import custom struct SystemInfo
-use process_monitor::models::system_info::SystemInfo;
+use crate::models::system_info::SystemInfo;
 //import needed traits from external crate
 use sysinfo::{System, SystemExt};
 
