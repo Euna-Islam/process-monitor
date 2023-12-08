@@ -1,2 +1,4 @@
-Welcome to the Process Monitor!
-Please type "0" for help!
+******************************************
+*****Welcome to the Process Monitor!******
+********Please type "0" for help!*********
+******************************************

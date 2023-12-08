@@ -22,6 +22,28 @@ use process_monitor::models::system_info::SystemInfo;
 use utils::process::{get_process_info, sort_by_cpu_usage, sort_by_memory};
 use utils::system::get_system_info;
 
+enum UserCommand {
+    HELP, SystemInfo, ListProcess, SortProcessByMemory, SortProcessByCpu, Exit, Invalid
+}
+
+impl UserCommand  {
+    fn from_string(input: &str) -> UserCommand {
+            if let Ok(num) = input.parse::<i32>() {
+                match num {
+                    0 => UserCommand::HELP,
+                    1 => UserCommand::SystemInfo,
+                    2 => UserCommand::ListProcess,
+                    3 => UserCommand::SortProcessByMemory,
+                    4 => UserCommand::SortProcessByCpu,
+                    5 => UserCommand::Exit,
+                    _ => UserCommand::Invalid
+                }
+            } else {
+                UserCommand::Invalid
+            }
+    }
+}
+
 /*Execution starts */
 fn main() {
     take_cmd_line_arg();
@@ -86,8 +108,12 @@ fn process_arg(args: &Vec<String>) {
  * process it
  */
 fn run_app() {
+
+    //process user command
+
+    //take user input in loop
     loop {
-        print_info("Enter command: ");
+        print_info("<------Enter command------>");
 
         //empty the stdout
         io::stdout().flush().unwrap();
@@ -99,15 +125,15 @@ fn run_app() {
             .expect("Error reading command from user");
         //remove white spaces from front and tail of string
         let input = input.trim();
-
+        let command = UserCommand::from_string(input);
         //match user's input
-        match input {
-            "exit" => {
+        match command {
+            UserCommand::Exit => {
                 //quit app
                 print_info("Exiting the program.");
                 break;
             }
-            "0" => {
+            UserCommand::HELP => {
                 //print manual
                 let content = read_file(app_args::HELP_FILE_PATH);
                 match content {
@@ -115,27 +141,27 @@ fn run_app() {
                     _ => {}
                 }
             }
-            "1" => {
+            UserCommand::SystemInfo => {
                 //print system info
                 let system_info: SystemInfo = get_system_info();
                 print_info(&system_info.to_string());
             }
-            "2" => {
+            UserCommand::ListProcess => {
                 //print process info
                 let process_info: Vec<ProcessInfo> = get_process_info();
                 print_processes(process_info);
             }
-            "3" => {
+            UserCommand::SortProcessByMemory => {
                 //sort process info by memory usage
                 let process_info: Vec<ProcessInfo> = sort_by_memory();
                 print_processes(process_info);
             }
-            "4" => {
+            UserCommand::SortProcessByCpu => {
                 //sort process info by cpu usage
                 let process_info: Vec<ProcessInfo> = sort_by_cpu_usage();
                 print_processes(process_info);
             }
-            _ => {
+            UserCommand::Invalid => {
                 //handle invalid input from user
                 print_error("Invalid command. Please use help.");
                 process::exit(exitcode::USAGE);

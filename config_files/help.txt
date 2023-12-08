@@ -5,3 +5,4 @@ Command Action
 2       list processes
 3       sort processes by memory usage(descending)
 4       sort processes by cpu usage(descending)
+5       exit
