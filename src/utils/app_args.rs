@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
 /* Contains all constants used in the app */
-//arguments help 
+//arguments help
 pub const HELP_ARG: &str = "manual";
 
 //file paths

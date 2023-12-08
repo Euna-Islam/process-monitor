@@ -22,7 +22,6 @@ use models::system_info::SystemInfo;
 use services::process::{get_process_info, sort_by_cpu_usage, sort_by_memory};
 use services::system::get_system_info;
 
-
 /*Execution starts */
 fn main() {
     take_cmd_line_arg();
@@ -87,7 +86,6 @@ fn process_arg(args: &Vec<String>) {
  * process it
  */
 fn run_app() {
-
     //process user command
 
     //take user input in loop
