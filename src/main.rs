@@ -1,45 +1,27 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
-//import module util
+//import custom modules
 mod models;
+mod services;
 mod utils;
-//import module app_arguments
-mod app_args;
 
 //import  module from standard library
 use std::env;
 use std::io::{self, Write};
 use std::process;
 
-//import custom structs
+//use utils
+use utils::app_args;
+use utils::user_cmds::UserCommand;
+
+//use custom structs
 use models::process_info::ProcessInfo;
 use models::system_info::SystemInfo;
 
-//import functions from modules utils
-use utils::process::{get_process_info, sort_by_cpu_usage, sort_by_memory};
-use utils::system::get_system_info;
+//use functions from modules utils
+use services::process::{get_process_info, sort_by_cpu_usage, sort_by_memory};
+use services::system::get_system_info;
 
-enum UserCommand {
-    HELP, GetSystemInfo, ListProcess, SortProcessByMemory, SortProcessByCpu, Exit, Invalid
-}
-
-impl UserCommand  {
-    fn from_string(input: &str) -> UserCommand {
-            if let Ok(num) = input.parse::<i32>() {
-                match num {
-                    0 => UserCommand::HELP,
-                    1 => UserCommand::GetSystemInfo,
-                    2 => UserCommand::ListProcess,
-                    3 => UserCommand::SortProcessByMemory,
-                    4 => UserCommand::SortProcessByCpu,
-                    5 => UserCommand::Exit,
-                    _ => UserCommand::Invalid
-                }
-            } else {
-                UserCommand::Invalid
-            }
-    }
-}
 
 /*Execution starts */
 fn main() {
@@ -123,7 +105,7 @@ fn run_app() {
             .expect("Error reading command from user");
         //remove white spaces from front and tail of string
         let input = input.trim();
-        let command = UserCommand::from_string(input);
+        let command = UserCommand::convert_str_to_cmd(input);
         //match user's input
         match command {
             UserCommand::Exit => {
@@ -131,7 +113,7 @@ fn run_app() {
                 print_info("Exiting the program.");
                 break;
             }
-            UserCommand::HELP => {
+            UserCommand::Help => {
                 //print manual
                 let content = read_file(app_args::HELP_FILE_PATH);
                 match content {
