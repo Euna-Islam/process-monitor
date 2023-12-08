@@ -3,7 +3,7 @@
 //import external crate for system information
 extern crate sysinfo;
 
-//import custom struct ProcessInfo 
+//import custom struct ProcessInfo
 use crate::models::process_info::ProcessInfo;
 
 //import needed traits from external crate sysinfo
