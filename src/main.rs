@@ -1,11 +1,8 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
 //import module util
-mod utils {
-    pub mod process;
-    pub mod system;
-}
-
+mod models;
+mod utils;
 //import module app_arguments
 mod app_args;
 
@@ -15,15 +12,15 @@ use std::io::{self, Write};
 use std::process;
 
 //import custom structs
-use process_monitor::models::process_info::ProcessInfo;
-use process_monitor::models::system_info::SystemInfo;
+use models::process_info::ProcessInfo;
+use models::system_info::SystemInfo;
 
 //import functions from modules utils
 use utils::process::{get_process_info, sort_by_cpu_usage, sort_by_memory};
 use utils::system::get_system_info;
 
 enum UserCommand {
-    HELP, SystemInfo, ListProcess, SortProcessByMemory, SortProcessByCpu, Exit, Invalid
+    HELP, GetSystemInfo, ListProcess, SortProcessByMemory, SortProcessByCpu, Exit, Invalid
 }
 
 impl UserCommand  {
@@ -31,7 +28,7 @@ impl UserCommand  {
             if let Ok(num) = input.parse::<i32>() {
                 match num {
                     0 => UserCommand::HELP,
-                    1 => UserCommand::SystemInfo,
+                    1 => UserCommand::GetSystemInfo,
                     2 => UserCommand::ListProcess,
                     3 => UserCommand::SortProcessByMemory,
                     4 => UserCommand::SortProcessByCpu,
@@ -113,6 +110,7 @@ fn run_app() {
 
     //take user input in loop
     loop {
+        print_info("<------------------------->");
         print_info("<------Enter command------>");
 
         //empty the stdout
@@ -141,7 +139,7 @@ fn run_app() {
                     _ => {}
                 }
             }
-            UserCommand::SystemInfo => {
+            UserCommand::GetSystemInfo => {
                 //print system info
                 let system_info: SystemInfo = get_system_info();
                 print_info(&system_info.to_string());

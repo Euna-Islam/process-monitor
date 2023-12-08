@@ -4,3 +4,7 @@
  * public module models
  */
 pub mod models;
+/*
+ * public module utils
+ */
+pub mod utils;
